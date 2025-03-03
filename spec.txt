@@ -1,0 +1,346 @@
+Description: 
+In this exercise, we will explore computer vision as a way for the robot to observe the world. We 
+will  cover  topics  such  as  using  camera  intrinsic parameters to convert distorted images to 
+undistorted images, color detection, and lane detection. Additionally, we will dive into different 
+types of controllers, how they work, how to tune them, and the pros and cons of each type. 
+Finally, we will integrate computer vision and control to enable the agent to follow the lane 
+automatically, similar to the demo in Exercise 1. 
+Objectives 
+1.  Learn  basic  computer  vision  concepts,  such  as distortion, color detection, and lane 
+detection. 
+2.  Develop a perception method using the robot’s camera to guide different behaviors in 
+real-time while interacting with different ROS nodes. 
+3.  Understand the similarities and differences between controllers, specifically “P,” “PD,” and 
+“PID” controllers, including their pros, cons, and tuning methods. 
+4.  Develop a method for driving the robot in a straight line using different controllers. 
+5.  Integrate controllers with computer vision to perform automatic lane following. 
+Prerequisites 
+1.  Charge your bot. 
+2.  Repeat the wheel calibration Documentation. 
+3.  Adjust camera focus.  
+4.  Repeat Camera intrinsic & extrinsic calibration Documentation. 
+5.  Create a new repository for exercise 3 (feel free to reuse your exercise 2’s repo). 
+ 
+Part One - Computer Vision 
+Understand camera intrinsic parameters and their role in image formation. We will learn how to 
+correct distorted images using intrinsic parameters to obtain undistorted views. Then, we will 
+1 
+implement  color  detection  techniques  to  detect  different  lane  colors  and  perform  different 
+behaviors corresponding to each color. 
+1.  Camera distortion: 
+a.  Subscribe to the camera topic 
+b.  Use your camera intrinsic calibration “.yaml” file to manually convert (transform) 
+the distorted image to become undistorted. DO NOT USE THE CALIBRATION 
+FROM EXERCISE 1 (hint: set the frequency to 3-5 frames/second). 
+c.  Create a publisher for undistorted images. 
+d.  Explain: How to convert distorted images to undistorted images? 
+2.  Image pre-processing: 
+a.  Resize the image. 
+b.  Apply image smoothing (blurring) using OpenCV. 
+3.  Color detection: 
+a.  Using the bot’s camera, save 3 images locally, each image shows a blue, red, 
+and green line. 
+b.  From the saved images in the previous step, get the lower and upper HSV values 
+for each lane color using appropriate methods (like this). 
+c.  Implement image contouring and color detection using OpenCV, 
+GeeksForGeeks. 
+d.  Draw a rectangle surrounding the detected lane. 
+e.  Get lane dimensions w.r.t bot’s camera.  
+f.  Explain: 
+i.  How to detect lines and colors? 
+ii.  How to get lanes dimension? 
+iii.  How to develop a robust line and color detection algorithm?  
+4.  LED controller: 
+a.  Develop a function to control the robot’s front and back LEDs, allowing the 
+desired color to be passed as a string or RGB value (feel free to reuse functions 
+from exercise 2). 
+5.  Autonomous Navigation Functions 
+a.  Implement movement functions to (feel free to reuse functions from exercise 2): 
+i.  Moves in a straight line for a specified distance (hint: pass the distance as 
+an argument to the function). 
+ii.  Moves in a curve through 90 degrees to the right. 
+iii.  Moves in a curve through 90 degrees to the left. 
+iv.  Stop the bot for a specified duration (hint: pass the duration as an 
+argument to the function). 
+b.  Combine LED with moving functions. 
+6.  Lane-Based Behavioral Execution 
+a.  Combine color and line detection, LED controller, and navigation functions to 
+perform the following: 
+i.  Blue line: 
+1.  Starts at least 30 cm away from the blue line. 
+2 
+2.  Stops before the line for 3-5 seconds. 
+3.  Signals on the right side (front & back) LED. 
+4.  Moves in a curve through 90 degrees to the right. 
+ii.  Red line: 
+1.  Starts at least 30 cm away from the red line. 
+2.  Stops before the line for 3-5 seconds. 
+3.  Moves straight for at least 30 cm. 
+iii.  Green line: 
+1.  Starts at least 30 cm away from the green line. 
+2.  Stops before the line for 3-5 seconds. 
+3.  Signals on the left front & back LED. 
+4.  Moves in a curve through 90 degrees to the left. 
+b.  Explain: 
+i.  How to integrate computer vision, LED control, and wheel movement 
+nodes? 
+ii.  How to improve this integration? 
+iii.  How to optimize this integration and handle delays (e.g., network or 
+control delays)? 
+iv.  How does camera frequency and control update rate impact integration 
+performance? 
+Part Two - Controllers 
+This  section  explores  in  depth  different  types  of  controllers  that  enable  the  bot  to  drive 
+autonomously. 
+1.  Implement functions to: 
+a.  Detect the yellow dotted lane (the lane that separates inbound and outbound 
+traffic). 
+b.  Detect the white solid lane (outer lane). 
+c.  Publish yellow and white lane detection results to a ROS topic. 
+2.  Implement  functions  for  the  following  controllers  to  perform  lane  following  along  a 
+straight path for at least 1.5 meters (see below for useful resources): 
+a.  Proportional (P) Controller (hint: create a publisher for the target path). 
+b.  Proportional-Derivative (PD) Controller. 
+c.  Proportional-Integral-Derivative (PID) Controller 
+3.  Explain: 
+a.  What are the pros and cons of “P,” “PD,” and “PID” controllers? 
+b.  What is the error calculation method for your controller? 
+c.  How does the derivative (“D”) term in the “PD” controller impact control logic? Is it 
+beneficial? 
+d.  How does the integral (“I”) term in the “PID” controller affect performance? Was it 
+useful for your robot? 
+e.  What methods can be used to tune the controller’s parameters effectively? 
+3 
+Part Three - Lane Following 
+This part integrates computer vision and controller to perform a full lap lane following using your 
+code. 
+1.  Create  a  node  that  can  lane  follow.  Use  any  method  of  your  choosing,  but  using 
+OpenCV is highly recommended. You will need some sort of error/target which you can 
+minimize. 
+2.  Start with a basic proportional controller, how well does it work?  What happens when 
+your control loop has a very large error? 
+3.  Try adding the derivative term to your proportional controller and implement a PD control 
+logic, does this help with dealing with large errors? 
+4.  Try adding the integral term to your PD controller and implement a PID control logic, 
+does this help with your control? 
+ 
+Useful Resources 
+ 
+●  PID Controller 
+●  Color Masking 
+●  Contours 
+ 
+Deliverables: 
+ 
+Calibration Board Screenshots 
+1.  Capture two screenshots using rqt_image_view: 
+a.  Distorted Image: Displays the calibration board with curved lines due to lens 
+distortion. 
+b.  Undistorted Image: Shows the corrected calibration board where lines appear 
+straight. 
+2.  Color Detection Screenshots: Capture three screenshots from your custom subscriber 
+using rqt_image_view, each showing the detected contour for a specific color: 
+a.  Blue Line Detection 
+b.  Red Line Detection 
+c.  Green Line Detection 
+Color-Based Navigation Videos 
+3.  Record  three  videos  demonstrating the bot’s response to different colored lines, 0.5 
+points will be deducted each time one of the bot’s wheels crosses outside the outer edge 
+of the tape: 
+a.  Blue Line: 
+i.  Starts at least 30 cm away from the blue line. 
+4 
+ii.  Stops before the line for 3-5 seconds. 
+iii.  Signals on the right side (front & back) LED. 
+iv.  Moves in a curve through 90 degrees to the right. 
+b.  Red Line: 
+i.  Starts at least 30 cm away from the red line. 
+ii.  Stops before the line for 3-5 seconds. 
+iii.  Moves straight for at least 30 cm. 
+c.  Green Line: 
+i.  Starts at least 30 cm away from the green line. 
+ii.  Stops before the line for 3-5 seconds. 
+iii.  Signals on the left front & back LED. 
+iv.  Moves in a curve through 90 degrees to the left. 
+Controller Performance Videos 
+4.  Record three videos of the bot following a straight lane for at least 1.5 meters using your 
+code with different control methods: 
+a.  P Controller 
+b.  PD Controller 
+c.  PID Controller 
+Lane-Following Video 
+5.  Record a demo video of the bot performing lane following using your code for one full 
+lap. 
+-  One point will be deducted each time one of the bot’s wheels crosses outside 
+the outer edge of the tape. 
+Be sure to include your answers to the questions included in the procedures above. Each of the 
+above images or videos should include a short write-up explaining the video or image. As well 
+you should also include a short overall write-up about what you implemented, how it works, 
+what you learned, what challenges you came across, and how you overcame the challenges and 
+your reflections, thoughts, and comments on this exercise of the lab. 
+ 
+On eClass you will submit: 
+●  To submit your website written report, first publish it to the public then upload a pdf 
+printout of your published report on eClass by the deadline (don’t worry if the formatting 
+is weird) 
+●  A link to your course website with the written report for this exercise 
+●  A link to your course Github repository with all the code from this exercise neatly in a 
+subfolder 
+5 
+Bonus Questions: 
+1.  Record a ROS bag for the lane-following experiment and plot the target and actual paths 
+for all “P,” “PD,” and “PID” controllers. 
+2.  Perform lane following for one full lap, using the English driving system (on the left side 
+of the road) using any controller. 
+Code Guidelines 
+We  are  providing  you with a template code and directory structure to help you get started 
+quickly  and  easily. The zip file for the template code is on #exercise3 channel on CMPUT 
+412/503 W25 slack. The provided function blocks are meant to be flexible guidelines that you 
+can modify, replace, or expand as needed. Think of them as a starting point that saves you time 
+and provides a basic framework, but not as rigid rules. You're free to adapt the code to best suit 
+your project's specific requirements, making development more straightforward and allowing 
+you to focus on solving your unique challenges. These codeblocks can be directly used in the 
+upcoming assignments as well. 
+Resources 
+You can use any material on the internet as long as you cite it properly. This includes tools like 
+chatGPT. You are encouraged to collaborate with your lab mates and if you develop a solution 
+together please acknowledge who you worked with in your written report.  
+Marking Guide 
+Objective  Points 
+Website  /1.0 
+Repo    /2.0 
+  Code structure: functions, 
+nodes, callbacks, etc 
+    /1.0 
+  ReadMe: how to run each 
+objective? How the packages 
+are structured? 
+    /1.0 
+Report  /19 
+Computer vision    /8.0 
+6 
+Image of the calibration board 
+with curved lines due to lens 
+distortion 
+    /0.5 
+Image of the corrected 
+calibration board where lines 
+appear straight 
+    /0.5 
+Explanation of the above 2 
+images 
+    /0.5 
+screenshot from your custom 
+subscriber using 
+rqt_image_view showing 
+contours detecting a blue line 
+    /0.5 
+screenshot from your custom 
+subscriber using 
+rqt_image_view showing 
+contours detecting a red line 
+    /0.5 
+screenshot from your custom 
+subscriber using 
+rqt_image_view showing 
+contours detecting a green 
+line 
+    /0.5 
+Explanation of the above 3 
+images 
+    /0.5 
+Explanation: how does color 
+detection work? How to tune 
+HSV parameters? 
+    /0.5 
+A video showing the bot 
+Starts at least 30 cm away. 
+Stops before the blue line for 
+3-5 seconds. Signals on the 
+right side (front & back) LED. 
+    /1.0 
+7 
+Moves in a curve through 90 
+degrees to the right. 
+A video showing the bot 
+Starts at least 30 cm away. 
+Stops before the red line for 
+3-5 seconds. Moves straight 
+for at least 30 cm 
+    /1.0 
+A video showing the bot 
+Starts at least 30 cm away. 
+Stops before the green line 
+for 3-5 seconds. Signals on 
+the left side (front & back) 
+LED. Moves in a curve 
+through 90 degrees to the 
+left. 
+    /1.0 
+Explanation of the above 3 
+videos 
+    /1.0 
+controllers    /5.0 
+ 
+A video of the bot following a 
+straight lane for at least 1.5 
+meters using your code with 
+a “P” controller 
+    /1.0 
+A video of the bot following a 
+straight lane for at least 1.5 
+meters using your code with 
+a “PD” controller 
+    /1.0 
+A video of the bot following a 
+straight lane for at least 1.5 
+    /1.0 
+8 
+meters using your code with 
+a “PID” controller 
+Explanation of the above 3 
+videos 
+    /1.0 
+Explanation of pros, cons, 
+differences, how did you tune 
+each controller “P”, “PD” and 
+“PID” 
+    /1.0 
+Lane following    /5.0 
+ 
+A video of the bot performing 
+lane following using your 
+code for one full lap (One 
+point will be deducted each 
+time one of the bot’s wheels 
+crosses outside the outer 
+edge of the tape) 
+    /4.0 
+Explanation of the above 
+video 
+    /1.0 
+Technical Marks    /4.0 
+Write-up      /2.0 
+Spelling and Grammar      /1.0 
+References      /1.0 
+Bonus 
+  /3.0 
+ Plot  the  target  and  actual 
+paths  for  all  “P,”  “PD,”  and 
+“PID”  controllers  from  the 
+ROS  bag  during  the  LF  for 
+one full lap. 
+     /1.5 
+ 
+9 
+  A video for the lane following 
+for  one  full  lap,  using  the 
+English  driving  system  (on 
+the left side of the road). 
+     /1.5 
+Bonus   
+/up to 0.5 per incomplete 
+robot based objective above 
+Total  25 
+ 
+ 
